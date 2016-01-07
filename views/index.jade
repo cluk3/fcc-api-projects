@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  h2 Microservices
+  ul
+    li: a(href='/timestamp') Timestamp
+    li: a(href='/rhp') Request Header Parser
+    li: a(href='/urlshort') Url Shortener
+    li: a(href='/isa') Image Search
+    li: a(href='/fm') File Metadata
