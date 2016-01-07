@@ -33,7 +33,8 @@ module.exports = function (grunt) {
         files: [
           'bin/www',
           'app.js',
-          'routes/*.js'
+          'routes.js',
+          'api/*.js'
         ],
         tasks: ['develop', 'delayed-livereload']
       },

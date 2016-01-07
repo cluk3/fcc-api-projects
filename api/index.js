@@ -15,9 +15,7 @@ router.get('/timestamp', function (req, res) {
 });
 
 /* GET Request Header Parser Microservice. */
-router.get('/rhp', function(req, res) {
-  res.send(' Request Header Parser Microservice');
-});
+router.get('/rhp', require('./rhp'));
 
 /* GET URL Shortener Microservice. */
 router.get('/urlshort', function(req, res) {
