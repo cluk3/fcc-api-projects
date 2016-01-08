@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var urlshort = require('./urlshort');
 
 /* GET home page. */
 
@@ -18,8 +19,12 @@ router.get('/timestamp', function (req, res) {
 router.get('/rhp', require('./rhp'));
 
 /* GET URL Shortener Microservice. */
+router.get('/urlshort/:shortcut', urlshort.index);
+
+router.get('/urlshort/new/*', urlshort.new);
+
 router.get('/urlshort', function(req, res) {
-  res.send('URL Shortener Microservice');
+  res.render('urlshort', { title: 'Urlshort Microservice' });
 });
 
 /* GET Image Search Abstraction Layer Microservice. */

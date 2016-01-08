@@ -13,6 +13,7 @@ var env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env == 'development';
 
+require('./database');
 // view engine setup
 
 app.set('views', path.join(__dirname, 'views'));
