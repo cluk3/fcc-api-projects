@@ -1,3 +1,4 @@
+var co = require('co')
 var mongoose = require("mongoose")
 var Schema = mongoose.Schema
 var UrlSchema = new Schema ({
@@ -20,6 +21,7 @@ var UrlSchema = new Schema ({
 var Url = mongoose.model('Url', UrlSchema)
 
 exports.index = function (req, res) {
+  
   var shortcut = req.params.shortcut
   Url.findOne({shortcut: shortcut})
   .then(function (result) {
@@ -35,59 +37,42 @@ exports.index = function (req, res) {
   }).then(null, function (e) {
     if (e) console.log(e)
   })
+  
 }
 
 exports.new = function (req, res) {
-  var url = req.params[0]
   
-  // check if the url is already in collection
-  Url.findOne({url: url})
-  .then(function (result) {
-    
-    // if it is send res
-    if (result) {
-      res.send({
+  var url = req.params[0]
+  co(function* () {
+    var result = yield Url.findOne({url: url})
+    if (result)
+      return res.send({
         original_url: result.url,
         short_url: req.hostname + '/urlshort/' + result.shortcut
       })
-    } else { //otherwise search last shorty and increase it
-      
-        Url.find(null,'shortcut')
-        .sort('-createdAt')
-        .limit(1)
-        
-        .then(function (doc) {
-          var newShortcut = '000'
-          doc = doc[0]
-          if(doc) {
-            if(doc.shortcut === 'zzz')
-              throw new Error('Max number of shortcuts reached')
-            newShortcut = generateNextShorty(doc.shortcut)
-          }
-          var newUrl = new Url({
-            url: url,
-            shortcut: newShortcut
-          })
-          return newUrl.save()
-        })
-        
-        .then(function(doc) {
-          console.log(doc)
-          res.send({
-            original_url: doc.url,
-            short_url: req.hostname + '/urlshort/' + doc.shortcut
-          })
-        })
-        
-        .then(null, function(err) {
-          if (err) console.log(err)
-        })
-    } // else end
+    result = (yield Url.find(null,'shortcut')
+      .sort('-createdAt')
+      .limit(1))[0]
+    var newShortcut = '000'
+    if(result) {
+      if(result.shortcut === 'zzz')
+        throw new Error('Max number of shortcuts reached')
+      newShortcut = generateNextShorty(result.shortcut)
+    }
+    var newUrl = new Url({
+      url: url,
+      shortcut: newShortcut
+    })
+    var saved = yield newUrl.save()
+    return res.send({
+      original_url: saved.url,
+      short_url: req.hostname + '/urlshort/' + saved.shortcut
+    })
+  }).catch(function(e) {
+    if (e) console.log(e)
   })
+  
 }
-
-
-
 
 function generateNextShorty (shorty) {
   // numbers: 48 -> 57
