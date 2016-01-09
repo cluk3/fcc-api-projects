@@ -24,7 +24,7 @@ exports.index = function (req, res) {
   Url.findOne({shortcut: shortcut})
   .then(function (result) {
     if (result) {
-      /^http:\/\//.test(result.url) ?
+      /^https?:\/\//.test(result.url) ?
         res.redirect(result.url) :
         res.redirect('http://'+result.url)
     } else {
@@ -32,6 +32,8 @@ exports.index = function (req, res) {
         error: "Short url not found"
       })
     }
+  }).then(null, function (e) {
+    if (e) console.log(e)
   })
 }
 
