@@ -1,4 +1,5 @@
 var co = require('co')
+var validator = require('validator')
 var mongoose = require("mongoose")
 var Schema = mongoose.Schema
 var UrlSchema = new Schema ({
@@ -31,7 +32,7 @@ exports.index = function (req, res) {
         res.redirect('http://'+result.url)
     } else {
       res.send({
-        error: "Short url not found"
+        error: "Short URL not found"
       })
     }
   }).then(null, function (e) {
@@ -43,6 +44,13 @@ exports.index = function (req, res) {
 exports.new = function (req, res) {
   
   var url = req.params[0]
+  var opts = {
+  protocols: ['http' , 'https']
+  }
+  if(!validator.isURL(url,opts))
+    return res.send({
+      error: 'Invalid URL'
+    })
   co(function* () {
     var result = yield Url.findOne({url: url})
     if (result)
