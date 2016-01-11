@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var urlshort = require('./urlshort');
+var isa = require('./isa');
 
 /* GET home page. */
 
@@ -29,8 +30,11 @@ router.get('/urlshort', function(req, res) {
 
 /* GET Image Search Abstraction Layer Microservice. */
 router.get('/isa', function(req, res) {
-  res.send('Image Search Abstraction Layer Microservice');
+  res.render('isa', { title: 'Image Search Abstraction Layer Microservice' });
 });
+
+router.get('/isa/search/latest', isa.latest);
+router.get('/isa/:query', isa.new);
 
 /* GET File Metadata Microservice. */
 router.get('/fm', function(req, res) {
