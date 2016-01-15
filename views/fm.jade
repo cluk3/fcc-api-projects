@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= title
+  h2 Usage:
+  p Upload the file and press Upload to receive the file size from the server.
+  form(enctype='multipart/form-data')
+    input(type='file' name='temp')
+    input(type='submit' value='Upload')
+    
+  p File size: 
+    span#size
+    
+  script(src='/js/fm_ajax.js')

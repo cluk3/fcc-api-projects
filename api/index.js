@@ -3,6 +3,7 @@ var router = express.Router();
 var urlshort = require('./urlshort');
 var isa = require('./isa');
 
+
 /* GET home page. */
 
 router.get('/', function(req, res) {
@@ -38,6 +39,9 @@ router.get('/isa/:query', isa.new);
 
 /* GET File Metadata Microservice. */
 router.get('/fm', function(req, res) {
-  res.send('File Metadata Microservice');
+  res.render('fm', { title: 'File Metadata Microservice' });
 });
+
+router.post('/fm/api', require('./fm'));
+
 module.exports = router;
